@@ -1,0 +1,22 @@
+jobs:
+- job: Job_1 
+  displayName: CodeQL Scan
+  pool:
+    name: Default
+  steps:
+  - task: PowerShell@2
+    displayName: 'Checkout codeql-anywhere'
+    inputs:
+      targetType: inline
+      script: |
+        if (Test-Path './.git/modules/codeql-anywhere') {rm -rf './.git/modules/codeql-anywhere'}
+        git submodule add https://github.com/david-wiggs/codeql-anywhere.git
+      pwsh: true
+  - task: PowerShell@2
+    displayName: 'Run New-CodeQLScan.ps1'
+    inputs:
+      targetType: filePath
+      filePath: 'codeql-anywhere/resources/scripts/New-CodeQLScan.ps1'
+      pwsh: true
+    env:
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
